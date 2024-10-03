@@ -1,0 +1,55 @@
+Train data: 14000
+Valid data: 3000
+Test data: 3000
+Epoch 0 train loss: 3.1505644697461808
+Epoch 0 valid loss: 2.7710392627716063 acc: 0.129
+Saving Best
+Epoch 1 train loss: 2.767473773411342
+Epoch 1 valid loss: 2.7291679019927977 acc: 0.14833333333333334
+Saving Best
+Epoch 2 train loss: 2.7292056407928467
+Epoch 2 valid loss: 2.8087723642985027 acc: 0.136
+Epoch 3 train loss: 2.7054115916660852
+Epoch 3 valid loss: 2.692953892389933 acc: 0.139
+Epoch 4 train loss: 2.6797520332336426
+Epoch 4 valid loss: 2.6785458335876466 acc: 0.15766666666666668
+Saving Best
+Epoch 5 train loss: 2.653124963760376
+Epoch 5 valid loss: 2.676421709060669 acc: 0.16266666666666665
+Saving Best
+Epoch 6 train loss: 2.6400485962459017
+Epoch 6 valid loss: 2.635197021484375 acc: 0.163
+Saving Best
+Epoch 7 train loss: 2.6110107342856272
+Epoch 7 valid loss: 2.6660404268900555 acc: 0.16833333333333333
+Saving Best
+Epoch 8 train loss: 2.607980383736747
+Epoch 8 valid loss: 2.6254629141489665 acc: 0.185
+Saving Best
+Epoch 9 train loss: 2.582124317441668
+Epoch 9 valid loss: 2.6571166528066 acc: 0.16633333333333333
+Epoch 10 train loss: 2.5786565851484027
+Epoch 10 valid loss: 2.680674840927124 acc: 0.17233333333333334
+Epoch 11 train loss: 2.563474465233939
+Epoch 11 valid loss: 2.6778625043233237 acc: 0.15933333333333333
+Epoch 12 train loss: 2.548502189091274
+Epoch 12 valid loss: 2.65627522277832 acc: 0.162
+Epoch 13 train loss: 2.533366312571934
+Epoch 13 valid loss: 2.6396698627471924 acc: 0.17666666666666667
+Epoch 14 train loss: 2.526202961512974
+Epoch 14 valid loss: 2.657174643198649 acc: 0.169
+Epoch 15 train loss: 2.5063285963875908
+Epoch 15 valid loss: 2.637213497797648 acc: 0.183
+Epoch 16 train loss: 2.4933729436056953
+Epoch 16 valid loss: 2.7264365812937417 acc: 0.14733333333333334
+Epoch 17 train loss: 2.477610943385533
+Epoch 17 valid loss: 2.7937617174784344 acc: 0.161
+Epoch 18 train loss: 2.457205604280744
+Epoch 18 valid loss: 2.7227475407918296 acc: 0.16266666666666665
+Epoch 19 train loss: 2.4361978628976004
+Epoch 19 valid loss: 2.7015803464253745 acc: 0.17533333333333334
+Training Time: 1179.5981149673462
+Training Peak Mem: 381.15234375
+Training Params: 665208
+Testing: 
+acc: 0.163

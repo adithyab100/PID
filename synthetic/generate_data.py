@@ -106,6 +106,10 @@ for i in range(n_modality):
     total_data[i] = np.vstack(total_data[i])
     assert(len(total_data[i]) == len(total_labels))
 
+# print(total_labels)
+# print(total_labels.shape)
+# print(set(total_labels.flatten()))
+
 data = dict()
 data['train'] = dict()
 data['valid'] = dict()
@@ -123,6 +127,8 @@ data['train']['label'] = np.array(y_train)
 data['valid']['label'] = np.array(y_valid)
 # data['valid2']['label'] = np.array(y_valid2)
 data['test']['label'] = np.array(y_test)
+
+# print(data)
 save_data(data, "DATA_{}.pickle".format(args.setting))
 # for k, v in total_raw_features.items():
 #     total_raw_features[k] = np.array(v)

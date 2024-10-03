@@ -45,6 +45,7 @@ def get_dataloader(path, keys=['a','b','label'], modalities=[0,1], batch_size=32
         data['test'] = test_data['test']
     label = keys[-1]
 
+    # print(data['train'])
     traindata = DataLoader(SyntheticDataset(data['train'], keys, modalities=modalities),
                     shuffle=True, 
                     num_workers=num_workers, 
@@ -87,6 +88,7 @@ class SyntheticDataset(Dataset):
         self.data = data
         self.keys = keys
         self.modalities = modalities
+        # print(keys, modalities)
         
     def __len__(self):
         return len(self.data[self.keys[-1]])
@@ -99,6 +101,7 @@ class SyntheticDataset(Dataset):
             else:
                 tmp.append(torch.ones(self.data[self.keys[i]][index].size))
         tmp.append(torch.tensor(self.data[self.keys[-1]][index]))
+        # print(tmp)
         return tmp
 
 
@@ -114,6 +117,10 @@ def process_input(inputs):
 
     for sample in inputs:  
         labels.append(sample[-1])
-    processed_input.append(torch.tensor(labels).view(len(inputs),))
+    # print("len(labels)", len(labels))
+    # print(len(labels), labels[0].shape, len(inputs))
+    # print("labels.shape", torch.tensor(labels))
+
+    processed_input.append(torch.stack(labels).view(len(inputs),-1))
     
     return processed_input
