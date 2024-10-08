@@ -43,17 +43,14 @@ def train(encoder, head, train_dataloader, valid_dataloader, total_epochs, early
             totalloss = 0.0
             totals = 0
             for j in train_dataloader:
-                # print(j)
                 op.zero_grad()
-                out = model(j[modalnum].float().to(torch.device("mps" if torch.backends.mps.is_available() else "cpu")))
+                out = model(j[modalnum].float().to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu")))
                 
                 if type(criterion) == torch.nn.modules.loss.BCEWithLogitsLoss:
-                    loss = criterion(out, j[-1].flatten().float().to(torch.device("mps" if torch.backends.mps.is_available() else "cpu")))
+                    loss = criterion(out, j[-1].float().to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu")))
                 else:
-                    # print(out.shape, len(j), j[-1].shape)
-                    # print(j)
-                    loss = criterion(out, j[-1].flatten().float().to(torch.device("mps" if torch.backends.mps.is_available() else "cpu")))
-                totalloss += loss.item() * len(j[-1])
+                    loss = criterion(out, j[-1].to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu")))
+                totalloss += loss * len(j[-1])
                 totals += len(j[-1])
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 8)
@@ -65,12 +62,12 @@ def train(encoder, head, train_dataloader, valid_dataloader, total_epochs, early
                 true = []
                 pts = []
                 for j in valid_dataloader:
-                    out = model(j[modalnum].float().to(torch.device("mps" if torch.backends.mps.is_available() else "cpu")))
+                    out = model(j[modalnum].float().to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu")))
                     if type(criterion) == torch.nn.modules.loss.BCEWithLogitsLoss:
-                        loss = criterion(out, j[-1].flatten().float().to(torch.device("mps" if torch.backends.mps.is_available() else "cpu")))
+                        loss = criterion(out, j[-1].float().to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu")))
                     else:
-                        loss = criterion(out, j[-1].flatten().to(torch.device("mps" if torch.backends.mps.is_available() else "cpu")))
-                    totalloss += loss.item()*len(j[-1])
+                        loss = criterion(out, j[-1].to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu")))
+                    totalloss += loss*len(j[-1])
                     if task == "classification":
                         pred.append(torch.argmax(out, 1))
                     elif task == "multilabel":
@@ -154,12 +151,12 @@ def single_test(encoder, head, test_dataloader, auprc=False, modalnum=0, task='c
         pts = []
         softmax_preds = []
         for j in test_dataloader:
-            out = model(j[modalnum].float().to(torch.device("mps" if torch.backends.mps.is_available() else "cpu")))
+            out = model(j[modalnum].float().to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu")))
             if save_preds:
                 for o in out:
                     softmax_preds.append(softmax(o).detach().cpu().numpy())
             if criterion is not None:
-                loss = criterion(out, j[-1].to(torch.device("mps" if torch.backends.mps.is_available() else "cpu")))
+                loss = criterion(out, j[-1].to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu")))
                 totalloss += loss*len(j[-1])
             if task == "classification":
                 pred.append(torch.argmax(out, 1))

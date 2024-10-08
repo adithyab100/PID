@@ -44,23 +44,22 @@ def EncourageAlignment(ce_weight=2, align_weight=args.weight, criterion=torch.nn
     return _actualfunc
 
 
-if __name__ == "__main__":
-    # Load data
-    traindata, validdata, _, testdata = get_dataloader(path=args.data_path, keys=args.keys, modalities=args.modalities, batch_size=args.bs, num_workers=args.num_workers)
+# Load data
+traindata, validdata, _, testdata = get_dataloader(path=args.data_path, keys=args.keys, modalities=args.modalities, batch_size=args.bs, num_workers=args.num_workers)
 
-    # Specify model
-    if len(args.input_dim) == 1:
-        input_dims = args.input_dim * len(args.modalities)
-    else:
-        input_dims = args.input_dim
-    encoders = [Linear(input_dim, args.hidden_dim).to(device) for input_dim in input_dims]
-    fusion = Sequential2(Concat(), MLP(len(args.modalities)*args.hidden_dim, args.n_latent, args.n_latent)).to(device)
-    head = MLP(args.n_latent, args.hidden_dim, args.num_classes).to(device)
+# Specify model
+if len(args.input_dim) == 1:
+    input_dims = args.input_dim * len(args.modalities)
+else:
+    input_dims = args.input_dim
+encoders = [Linear(input_dim, args.hidden_dim).to(device) for input_dim in input_dims]
+fusion = Sequential2(Concat(), MLP(len(args.modalities)*args.hidden_dim, args.n_latent, args.n_latent)).to(device)
+head = MLP(args.n_latent, args.hidden_dim, args.num_classes).to(device)
 
-    # Training
-    train(encoders, fusion, head, traindata, validdata, args.epochs, objective=torch.nn.CrossEntropyLoss(), optimtype=torch.optim.AdamW, is_packed=False, lr=args.lr, save=args.saved_model, weight_decay=args.weight_decay)
+# Training
+train(encoders, fusion, head, traindata, validdata, args.epochs, objective=torch.nn.CrossEntropyLoss(), optimtype=torch.optim.AdamW, is_packed=False, lr=args.lr, save=args.saved_model, weight_decay=args.weight_decay)
 
-    # Testing
-    print("Testing:")
-    model = torch.load(args.saved_model).to(device)
-    test(model, testdata, is_packed=False, no_robust=True, criterion=torch.nn.CrossEntropyLoss())
+# Testing
+print("Testing:")
+model = torch.load(args.saved_model).to(device)
+test(model, testdata, is_packed=False, no_robust=True, criterion=torch.nn.CrossEntropyLoss())

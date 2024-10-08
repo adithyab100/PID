@@ -3,11 +3,15 @@ from cvxpy import *
 import numpy as np
 from scipy.special import rel_entr
 
-def solve_Q_new(P: np.ndarray):
+def solve_Q_new(P: np.ndarray, sensitivity: bool = False, P_delta: np.ndarray = None):
   '''
   Compute optimal Q given 3d array P 
   with dimensions coressponding to x1, x2, and y respectively
   '''
+  P_copy = np.copy(P)
+  P = cp.Parameter(P.shape, nonneg=True)
+  P.value = P_copy
+
   Py = P.sum(axis=0).sum(axis=0)
   Px1 = P.sum(axis=1).sum(axis=1)
   Px2 = P.sum(axis=0).sum(axis=1)
@@ -52,10 +56,28 @@ def solve_Q_new(P: np.ndarray):
   # print(obj.shape)
   all_constrs = [sum_to_one_Q] + A_cstrs + B_cstrs + Q_pdt_dist_cstrs
   prob = cp.Problem(cp.Minimize(obj), all_constrs)
-  try:
-    prob.solve(verbose=False, max_iters=10000)
-  except:
-    prob.solve(solver=SCS, verbose=False, max_iters=10000)
+
+  if not sensitivity:
+    try:
+      prob.solve(verbose=False, max_iters=10000)
+    except:
+      prob.solve(solver=SCS, verbose=False, max_iters=10000)
+  else:
+    P.delta = P_delta
+
+    try:
+      prob.solve(verbose=False, requires_grad = True, max_iters=10000)
+    except:
+      prob.solve(solver=SCS, requires_grad = True, verbose=False, max_iters=10000)
+    
+    sensitivity = prob.derivative()[P]
+
+    print("Sensitivity to P:", sensitivity)
+
+    
+
+    
+    
 
   # print(prob.status)
   # print(prob.value)
@@ -158,8 +180,8 @@ def UI(P, cond_id=0):
 
   return sum
 
-def get_measure(P):
-  Q = solve_Q_new(P)
+def get_measure(P, sensitivity=False):
+  Q = solve_Q_new(P, sensitivity = sensitivity)
   redundancy = CoI(Q)
   print('Redundancy', redundancy)
   unique_1 = UI(Q, cond_id=1)
